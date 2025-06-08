@@ -1,3 +1,4 @@
+# bot.py
 import time
 import json
 import os
@@ -82,12 +83,26 @@ class TwitterWhatsAppBot:
         """Set up Chrome options for the webdriver"""
         options = Options()
         
-        # Essential options only
+        # Essential options
         options.add_argument("--no-sandbox")
         options.add_argument("--disable-dev-shm-usage")
         options.add_argument("--disable-blink-features=AutomationControlled")
         options.add_experimental_option("excludeSwitches", ["enable-automation"])
         options.add_experimental_option('useAutomationExtension', False)
+        
+        # Options to prevent Chrome from going to sleep when computer is locked
+        options.add_argument("--disable-background-timer-throttling")
+        options.add_argument("--disable-renderer-backgrounding")
+        options.add_argument("--disable-backgrounding-occluded-windows")
+        options.add_argument("--disable-ipc-flooding-protection")
+        options.add_argument("--keep-alive-for-test")
+        options.add_argument("--disable-hang-monitor")
+        
+        # Additional stability options
+        options.add_argument("--disable-gpu")
+        options.add_argument("--disable-web-security")
+        options.add_argument("--disable-features=VizDisplayCompositor")
+        options.add_argument("--remote-debugging-port=9222")
         
         # Profile directory
         options.add_argument("--user-data-dir=./chrome_profile")
