@@ -82,7 +82,7 @@ class Config:
 
 1. **Run the bot**:
 ```bash
-python main.py
+caffeinate -i python3 main.py
 ```
 
 2. **Follow the setup prompts**:
