@@ -1,0 +1,6 @@
+processed_tweets.json
+venv/
+.env
+__pycache__/
+chrome_profile/
+.DS_Store
