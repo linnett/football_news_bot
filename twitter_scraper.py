@@ -1,4 +1,5 @@
 import time
+import re
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -118,11 +119,35 @@ class TwitterScraper:
         
         return is_retweet
     
+    def _contains_keywords(self, text):
+        """
+        Check if text contains related keywords with precise matching.
+        Prevents false positives like #AFC matching #AFCB.
+        """
+        text_lower = text.lower()
+        
+        for keyword in Config.KEYWORDS:
+            keyword_lower = keyword.lower()
+            
+            if keyword.startswith('#'):
+                # For hashtags, ensure it's followed by space, punctuation, or end of string
+                # This prevents #AFC from matching #AFCB
+                pattern = re.escape(keyword_lower) + r'(?=\s|[^\w]|$)'
+                if re.search(pattern, text_lower):
+                    return True
+            else:
+                # For regular words, use word boundaries
+                pattern = r'\b' + re.escape(keyword_lower) + r'\b'
+                if re.search(pattern, text_lower):
+                    return True
+        
+        return False
+    
     def _should_include_tweet(self, username, tweet_text):
         """Determine if tweet should be included based on filtering rules"""
         if username == "HandofArsenal":
             # Include ALL original tweets from HandofArsenal
             return True
         else:
-            # For other accounts, check for Arsenal keywords
-            return any(keyword.lower() in tweet_text.lower() for keyword in Config.KEYWORDS)
+            # For other accounts, check for Arsenal keywords with precise matching
+            return self._contains_keywords(tweet_text)
